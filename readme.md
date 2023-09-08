@@ -49,8 +49,8 @@ GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 
 ## Developers/Contributors
 ```node
-Anupam Singh Deo
-Sandip Shrivastava
+[Anupam Singh Deo](https://directory.prod.atl-paas.net/employees/adeo)
+[Sandip Shrivastava](https://directory.prod.atl-paas.net/employees/sshrivastava)
 ```
 
 
