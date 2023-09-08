@@ -1,0 +1,9 @@
+# Ignore node modules
+node_modules
+
+# Ignore my properties file
+env.properties
+
+
+# Ignore my google service json file
+google/my-google-svc-account.json
