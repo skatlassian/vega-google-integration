@@ -48,10 +48,9 @@ GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 [vega-google-integration](https://github.com/adeo-atlassian/vega-google-integration)
 
 ## Developers/Contributors
-```node
 [Anupam Singh Deo](https://directory.prod.atl-paas.net/employees/adeo)
 [Sandip Shrivastava](https://directory.prod.atl-paas.net/employees/sshrivastava)
-```
+
 
 
 ## License
