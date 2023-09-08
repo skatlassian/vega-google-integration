@@ -44,10 +44,15 @@ GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 # https://hackernoon.com/how-to-use-google-sheets-api-with-nodejs-cz3v316f
 ```
 
+## Github URL
+[vega-google-integration](https://github.com/adeo-atlassian/vega-google-integration)
+
 ## Developers/Contributors
 ```node
 Anupam Singh Deo
 Sandip Shrivastava
 ```
+
+
 ## License
 [JIRA EMEA Team](www.atlassian.com)
