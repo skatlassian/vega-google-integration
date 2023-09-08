@@ -14,8 +14,8 @@ Run the below command from terminal for your local set up
 # install atlas cli from https://developer.atlassian.com/platform/atlas-cli/users/install/
 /bin/bash -c "$(curl -fsSL https://statlas.prod.atl-paas.net/atlas-cli/install.sh)"
 
-install SLAuth CLI https://developer.atlassian.com/platform/slauth/cli/install/
-# atlas plugin install -n slauth 
+# install SLAuth CLI https://developer.atlassian.com/platform/slauth/cli/install/
+atlas plugin install -n slauth 
 ```
 
 ## Creating sensitive files
