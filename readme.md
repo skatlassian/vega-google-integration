@@ -8,7 +8,8 @@ npm install axios
 ```
 
 ## Setting terminal
-Run the below command from terminal for your local set up
+Run the below command from terminal for your local set up. 
+These packages are required to create vega tokens which is used to authenticate with vega.
 
 ```node
 # install atlas cli from https://developer.atlassian.com/platform/atlas-cli/users/install/
