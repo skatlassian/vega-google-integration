@@ -1,4 +1,4 @@
-## installations
+## Installations
 While setting the project for first time, run these comamnds from root of the project to install the node modules required
 ```node
 npm install googleapis
@@ -57,6 +57,12 @@ GCLOUD_PROJECT=PROJECT_ID
 GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 ```
 
+## Project links
+![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) <br>
+[Join us](https://atlassian.slack.com/archives/C05Q71R0P6) <br> <br>
+
+![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)<br>
+[Visit us](https://shipit.atlassian.net/browse/SHPLVII-71)
 
 
 ## Github URL
