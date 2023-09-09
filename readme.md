@@ -19,13 +19,31 @@ These packages are required to create vega tokens which is used to authenticate 
 atlas plugin install -n slauth 
 ```
 
+## Doc used to integrate with google sheet
+```node
+Currently, we don't have permission to create project in our atlassian's gmail box. The below steps are from my personal gmail ID.
+* Open google developer console
+* Create a project; give a name and choose a location
+* Go to https://console.developers.google.com/ again
+* Click on 'ENABLE APIS AND SERVICES'
+* Click on 'Google Sheets API', enable it
+* Create a service account from google developer console; give a name, id and email address
+* Once done, click on the three dots to the right of service account and navigate to 'Manage keys'
+* Click on Create new key, choose JSON format, download it and rename it to 'my-google-svc-account.json'
+* Move this key to the project inside the google folder
+* You will see an email created for the service account, copy that and share that with the sheet you want to interact through script
+* Identify the id of the sheet (observe the URL after '/spreadsheets/d/' till '/edit' starts), save it as 'GOOGLE_SHEET_ID' in properties file
+* Save the sheet name as 'GOOGLE_SHEET_NAME' in properties file, this is the sheet used to read data from
+* Save the sheet name as 'GOOGLE_SHEET_UPDATE_NAME' in properties file, this is the sheet used to update data from
+```
+
 ## Creating sensitive files
 The below files are not added to git as they contain sensitive information. They have to be created and refreshed with actual values for every developer
 
 ```node
 # create a properties file named 'env.properties' in the root directory
 
-# create/put the 'my-google-svc-account.json' inside the google sub directory to store the google auth json
+# create/put the 'my-google-svc-account.json' inside the google sub directory to store the google auth json. If you followed the steps to integrate with google sheet, you should have downloaded a json key, rename it and move to the google folder.
 ```
 
 
@@ -39,10 +57,7 @@ GCLOUD_PROJECT=PROJECT_ID
 GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 ```
 
-## Doc used to integrate with google sheet
-```node
-# https://hackernoon.com/how-to-use-google-sheets-api-with-nodejs-cz3v316f
-```
+
 
 ## Github URL
 [vega-google-integration](https://github.com/adeo-atlassian/vega-google-integration)
