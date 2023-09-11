@@ -69,3 +69,10 @@ https://vega.us-east-1.prod.atl-paas.net/graphql
     "variables":{"employeeId":"adeo"},
     "operationName":"CalendarEvents"
 }
+
+-- multiple users in one fetch
+{
+"query": "query CalendarEvents($employeeIdIn: [String!]) { calendarEvents(  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+    "variables":{"employeeIdIn":["adeo","vkgan"]},
+    "operationName":"CalendarEvents"
+}
