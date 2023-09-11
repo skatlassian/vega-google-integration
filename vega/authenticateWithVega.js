@@ -16,11 +16,11 @@ function makePost(token){
     var url = `${properties.get("VEGA_URL")}`
   const postData = {
       "query":"query CustomQuery($id: ID!){employee(id: $id){displayName location}}",
-      "variables":{"id":"adeo"},"operationName":"CustomQuery"
+      "variables":{"id":"vkgan"},"operationName":"CustomQuery"
   };
 
 console.log(token)
-console.log("")
+// console.log("")
 
 
 var config =    { 

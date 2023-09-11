@@ -1,0 +1,35 @@
+https://vega.us-east-1.prod.atl-paas.net/graphql
+
+--req
+{
+    "query":"query CustomQuery($id: ID!){employee(id: $id){displayName location}}",
+    "variables": {"id":"adeo"},
+    "operationName":"CustomQuery"
+}
+
+---response
+{
+    "data": {
+        "employee": {
+            "displayName": "Anupam Deo",
+            "location": "Home Office: Haryana, India"
+        }
+    }
+}
+
+
+
+--- valid queries
+{
+    "query":"query CustomQuery($employeeId: ID!){employee(id: $employeeId){displayName}}",
+   "variables":{"employeeId":"adeo"},
+    "operationName":"CustomQuery"
+}
+
+
+{
+    "query":"query CustomQuery($employeeId: ID!){employee(id: $employeeId){displayName}}",
+   "variables":{"employeeId":"adeo"},
+    "operationName":"CustomQuery"
+}
+

@@ -76,3 +76,6 @@ GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 
 ## License
 [JIRA EMEA Team](www.atlassian.com)
+
+## Schema
+[Schema](https://studio.apollographql.com/graph/Vega-Calendar/variant/prod/schema/reference)
