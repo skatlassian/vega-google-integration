@@ -66,8 +66,8 @@ async function updateValues({spreadsheetId, auth, sheetName}) {
 
   let values = [
     [
-      "Value4",
-      "Value2"
+      "Anupam",
+      "Sandip"
     ]
     // Additional rows ...
   ];
