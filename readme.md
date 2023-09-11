@@ -81,6 +81,6 @@ GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 [Schema](https://studio.apollographql.com/graph/Vega-Calendar/variant/prod/schema/reference)
 
 ## GraphQL Servers
-[Prod](https://vega.prod.atl-paas.net/graphql)
-[Dev](https://vega.dev.atl-paas.net/graphql)
-[Stage](https://vega.staging.atl-paas.net/graphql)
+[Prod](https://vega.prod.atl-paas.net/graphql) <br />
+[Dev](https://vega.dev.atl-paas.net/graphql) <br />
+[Stage](https://vega.staging.atl-paas.net/graphql) <br />
