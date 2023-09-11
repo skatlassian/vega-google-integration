@@ -19,7 +19,7 @@ These packages are required to create vega tokens which is used to authenticate 
 atlas plugin install -n slauth 
 ```
 
-## Doc used to integrate with google sheet
+## Steps used to integrate with google sheet
 ```node
 Currently, we don't have permission to create project in our atlassian's gmail box. The below steps are from my personal gmail ID.
 * Open google developer console
