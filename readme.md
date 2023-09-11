@@ -1,3 +1,24 @@
+## Creating sensitive files
+The below files are not added to git as they contain sensitive information. They have to be created and refreshed with actual values for every developer
+
+```node
+# create a properties file named 'env.properties' in the root directory
+```
+
+## Setting up the properties file
+```node
+# set below variables (replace with actual values) into the properties file created above. Keep the GOOGLE_APPLICATION_CREDENTIALS and VEGA_URL values as it is.
+GOOGLE_SHEET_ID=SHEET_ID
+GOOGLE_SHEET_NAME=SHEET_NAME
+GOOGLE_SHEET_UPDATE_NAME=SHEET_UPDATE_NAME
+GCLOUD_PROJECT=PROJECT_ID
+GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
+VEGA_URL=https://vega.us-east-1.prod.atl-paas.net/graphql
+```
+
+
+
+
 ## Installations
 While setting the project for first time, run these comamnds from root of the project to install the node modules required
 ```node
@@ -37,25 +58,7 @@ Currently, we don't have permission to create project in our atlassian's gmail b
 * Save the sheet name as 'GOOGLE_SHEET_UPDATE_NAME' in properties file, this is the sheet used to update data from
 ```
 
-## Creating sensitive files
-The below files are not added to git as they contain sensitive information. They have to be created and refreshed with actual values for every developer
 
-```node
-# create a properties file named 'env.properties' in the root directory
-
-# create/put the 'my-google-svc-account.json' inside the google sub directory to store the google auth json. If you followed the steps to integrate with google sheet, you should have downloaded a json key, rename it and move to the google folder.
-```
-
-
-## Setting up the properties file
-```node
-# set below variables (replace with actual values) into the properties file created above
-GOOGLE_SHEET_ID=SHEET_ID
-GOOGLE_SHEET_NAME=SHEET_NAME
-GOOGLE_SHEET_UPDATE_NAME=SHEET_UPDATE_NAME
-GCLOUD_PROJECT=PROJECT_ID
-GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
-```
 
 ## Project links
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) <br>
