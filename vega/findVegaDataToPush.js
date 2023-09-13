@@ -65,28 +65,18 @@ function prepareDataForGSheet(){
                             console.error("could not fetch calendar records, used query: ", calendarQuery)
                         }
 
-                        
-                    
                     })
-                        
-    
-    
-                   /* console.log('Response data:' +  JSON.stringify(response.data));
-                    console.log('Response code:' +  JSON.stringify(response.code));
-                    console.log('Response status:' +  JSON.stringify(response.message));*/
-    
-                
+
             }else{
                 console.error("could not fetch manager reportees, used query: ", query)
             }
                         
         })
-        
-    
-    
+
     }
     
 }
 
 
 prepareDataForGSheet()
+module.exports = { prepareDataForGSheet }

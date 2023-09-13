@@ -9,43 +9,43 @@ const properties = PropertiesReader('../env.properties');
  */
 
 async function callVega(query) {
-let token = authenticateVega.getToken()
+    let token = authenticateVega.getToken()
 
 
-let url = `${properties.get("VEGA_URL")}`
-let ret = {}
+    let url = `${properties.get("VEGA_URL")}`
+    let ret = {}
 
-let config =    { 
-  headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token.replace(/\r?\n|\r/g, '')
-}
-};
-  // Make the POST request
-  let axiosResponse = await axios.post(url, query, config).then((response) => {
-    // console.log('Response data:', response.data);
-    return {
-        "data": response.data,
-        "code": 200,
-        "message": "success"
-      }
+    let config =    { 
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token.replace(/\r?\n|\r/g, '')
+    }
+    };
+    // Make the POST request
+    let axiosResponse = await axios.post(url, query, config).then((response) => {
+        // console.log('Response data:', response.data);
+        return {
+            "data": response.data,
+            "code": 200,
+            "message": "success"
+        }
+        
+    })
+    .catch((error) => {
+        console.log('Code:', error.message);
+        console.log('Status:', error.code);
+        return {
+            "data": {},
+            "code": error.code,
+            "message": error.message
+        }
+
+        // console.error('Error:', error);
+    });
+
+    // console.log('axiosResponse: ' +  JSON.stringify(axiosResponse));
     
-  })
-  .catch((error) => {
-    console.log('Code:', error.message);
-    console.log('Status:', error.code);
-    return {
-        "data": {},
-        "code": error.code,
-        "message": error.message
-      }
-
-    // console.error('Error:', error);
-  });
-
-  // console.log('axiosResponse: ' +  JSON.stringify(axiosResponse));
- 
-  return axiosResponse
+    return axiosResponse
 
 }
 

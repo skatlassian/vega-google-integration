@@ -14,6 +14,8 @@ GOOGLE_SHEET_UPDATE_NAME=SHEET_UPDATE_NAME
 GCLOUD_PROJECT=PROJECT_ID
 GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 VEGA_URL=https://vega.us-east-1.prod.atl-paas.net/graphql
+# Configure Manager Mapping (this is subject to change, as of now we are fetching reportees of these two managers and update events)
+MANAGERS_LIST=vkgan, alonare
 ```
 
 
