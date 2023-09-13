@@ -1,7 +1,9 @@
 const axios = require('axios');
 const authenticateVega = require('./getVegaToken')
 var PropertiesReader = require('properties-reader');
-var properties = PropertiesReader('../env.properties');
+
+
+var properties = PropertiesReader('../env.properties')
 
 // Define the data you want to send in the POST request
 

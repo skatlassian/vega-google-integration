@@ -23,7 +23,7 @@ let config =    {
 };
   // Make the POST request
   let axiosResponse = await axios.post(url, query, config).then((response) => {
-    console.log('Response data:', response.data);
+    // console.log('Response data:', response.data);
     return {
         "data": response.data,
         "code": 200,
