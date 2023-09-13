@@ -64,16 +64,18 @@ async function findCalendarEventsForUsers(usersToQuery){
                 console.log(`endDate: ${endDate}`)
                 
 
+                for(let empCounter = 0; empCounter < usersToQuery.length; empCounter++){
                     
                    // console.log(`emp: ${usersToQuery[empCounter]}`)
-                    let calendarQuery = {"query":"query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeIdIn: [String!]) { calendarEvents( startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte,  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
-                    "variables":{
-                        "employeeIdIn":usersToQuery,
-                        "startDatetimeGte":`${startDate}`,
-                        "endDatetimeGte": `${endDate}`
-                        },
-                    "operationName":"CalendarEvents"
-                    }
+                    let calendarQuery = {
+                        "query": "query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeId: String) { calendarEvents(  startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte, employeeId: $employeeId) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+                            "variables":{
+                                "employeeId":`${usersToQuery[empCounter]}`,
+                                "startDatetimeGte":`${startDate}`,
+                                "endDatetimeGte": `${endDate}`
+                                },
+                            "operationName":"CalendarEvents"
+                        }
                 //  console.log("calendarQuery, ", JSON.stringify(calendarQuery))
             
                 
@@ -116,6 +118,8 @@ async function findCalendarEventsForUsers(usersToQuery){
                                       
     
                 })
+                
+            }
             
             console.log("prepData: ", JSON.stringify(prepData))            
 
