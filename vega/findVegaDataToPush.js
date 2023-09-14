@@ -28,8 +28,7 @@ function findDirectReports(){
                     let usersToQuery = []
                     for (let k = 0; k < directReportsJson.length; k++){
                         let currentPoint = directReportsJson[k]
-                        
-                        
+                                                
                         if(currentPoint.isActive == true){                            
                             usersToQuery.push(currentPoint.id)
                         }  
