@@ -29,14 +29,8 @@ function setEnvVariables(){
   
 }
 
-
-
-  
-
-
-
-
-  async function getSpreadSheetRows({spreadsheetId, auth, sheetName}) {
+  async function getSpreadSheetRows() {
+    const auth = await getAuthToken();
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId,
       auth,
@@ -50,8 +44,6 @@ function setEnvVariables(){
     let modal = modalData(rows)
     return modal
     // 
-
-
   }
 
 
@@ -59,7 +51,6 @@ function setEnvVariables(){
  async function modalData(rows){
 
         // console.log(`Engineer: ${currentRow[6]}, Manager: ${currentRow[2]}, ${currentRow[3]}`);
-        // console.log(`Header row: ${dateHeaderRow}`)
         if(rows == undefined){
             const res = await sheets.spreadsheets.values.get({
                 spreadsheetId,
@@ -73,9 +64,7 @@ function setEnvVariables(){
         let employeeRowIndexObject = getEmployeeIndexes(rows, dateRowIndex)
         // console.log ("employeeRowIndexObject: " + JSON.stringify(employeeRowIndexObject))
 
-        let dateHeaderObject = getHeaderIndexes(rows, dateRowIndex)
-
-      
+        let dateHeaderObject = getHeaderIndexes(rows, dateRowIndex)  
         // console.log ("Columns: " + JSON.stringify(dateHeaderObject))
 
         return {
@@ -101,7 +90,7 @@ function setEnvVariables(){
 
     console.log(`currentRow.length: ${currentRow.length} startDate: ${startDate}, endDate: ${endDate}`)
     //currentRow.length
-    for(let i = 0; i <= currentRow.length; i++){
+    for(let i = 7; i <= currentRow.length; i++){
         let currentCellValue = currentRow[i]            
         
         try{
@@ -110,8 +99,6 @@ function setEnvVariables(){
             let dateToSet = newDate.toISOString().slice(0, 10);
             
             // i for column index, d for day of week
-            
-            // console.log (`dayOfWeekRow ${dayOfWeekRow[i]}  `)
             // console.log (`headerDateFormatted ${JSON.stringify(headerDateFormatted)}`)
 
             if(Date.parse(startDate) > Date.parse(dateToSet)){
@@ -160,27 +147,9 @@ function setEnvVariables(){
     }
     return employeeRowIndexObject
 
-
  }
 
 
-
-
-  async function testGetSpreadSheetRows() {
-    try {
-      const auth = await getAuthToken();
-      const response = await getSpreadSheetRows({
-        spreadsheetId,
-        sheetName,
-        auth
-      })
-
-      return response
-      // console.log('output for getSpreadSheetRows', JSON.stringify(response.data, null, 2));
-    } catch(error) {
-      console.log(error.message, error.stack);
-    }
-  }
 
   async function testUpdateValues(range, value) {
     try {
@@ -232,21 +201,18 @@ function setEnvVariables(){
   }
 
 
-  
-
-
-
-  function columnIndexToRange(sheetTitle, columnIndex1, columnIndex2, row) {
+function columnIndexToRange(sheetTitle, columnIndex1, columnIndex2, row) {
     const columnName1 = columnIndexToLetter(columnIndex1);
     const columnName2 = columnIndexToLetter(columnIndex2);
+    // console.log(`${row}====>> ${sheetTitle}!${columnName1}${row}:${columnName2}${row}`)
 
-
+    
     return `${sheetTitle}!${columnName1}${row}:${columnName2}${row}`;
   };
   
   function columnIndexToLetter(columnIndex) {
     let columnName = '';
-    let dividend = columnIndex + 1;
+    let dividend = columnIndex;
     let modulo;
   
     while (dividend > 0) {
@@ -255,92 +221,138 @@ function setEnvVariables(){
       dividend = parseInt((dividend - modulo) / 26);
     }
   
-  
     return columnName;
   };
 
 
 async function factorVegaDate(prepData){
 
-if(prepData != undefined){
-    // console.log(`from prep: ${JSON.stringify(prepData)}`)
-    let indices = {}
-    indices = await testGetSpreadSheetRows()
+  if(prepData != undefined){
+      // console.log(`from prep: ${JSON.stringify(prepData)}`)
+      let indices = {}
+      indices = await getSpreadSheetRows()
+      let startDate = `${properties.get("QUERY_START_DATE")}`.trim()
+      let endDate = `${properties.get("QUERY_END_DATE")}`.trim()
+      let maxRangeDifference = findDateDifference(startDate, endDate)
 
 
-    let keys = Object.keys(prepData)
+      let keys = Object.keys(prepData)
 
-    let headerIndex = indices["headerIndex"]
-    console.log(`headerIndex: ${JSON.stringify(headerIndex)}`)
-    for(let k in keys){
-        let employee = keys[k]
-        let sheetIndex = indices["employeeIndex"][employee]
+      let headerIndex = indices["headerIndex"]
+      // console.log(`headerIndex: ${JSON.stringify(headerIndex)}`)
 
-        // console.log(`headerIndex: ${JSON.stringify(headerIndex)}`)
-        let employeeEvents = prepData[employee]
-        for(let m = 0; m < employeeEvents.length; m++){
-            try{
-                let blob = employeeEvents[m]
-            
-                //console.log(`Blobs: ${JSON.stringify(blob)}`)
-                let eventStartDate = blob.eventStartDate.slice(0, 10);
-                let eventEndDate = blob.eventEndDate.slice(0, 10);
-                let eventType = blob.eventType.id
-    
-                let startEventIndex = headerIndex[eventStartDate]["i"]
-                let endEventIndex = headerIndex[eventEndDate]["i"]
-    
-                let range = columnIndexToRange(sheetName, startEventIndex, endEventIndex, sheetIndex)
+      let batchUpdateArray = []
+      for(let k in keys){
+          let employee = keys[k]
+          let sheetIndex = indices["employeeIndex"][employee]
 
-                const date1 = new Date(eventStartDate);
-                const date2 = new Date(eventEndDate);
-                const diffTime = Math.abs(date2 - date1);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                let valueArray = []
-                for(let c = 0; c < diffDays; c++){
-                    valueArray.push(eventType)
+          if(sheetIndex == undefined){
+            continue
+          }
 
+          // console.log(`sheetIndex: ${JSON.stringify(indices["employeeIndex"])}`)
+          let employeeEvents = prepData[employee]
+          for(let m = 0; m < employeeEvents.length; m++){
+              try{
+                  let blob = employeeEvents[m]
+              
+                  //console.log(`Blobs: ${JSON.stringify(blob)}`)
+                  let eventStartDate = blob.eventStartDate.slice(0, 10);
+                  let eventEndDate = blob.eventEndDate.slice(0, 10);
+                  let eventType = blob.eventType.id
+      
+                  let startEventIndex = headerIndex[eventStartDate]["i"]
+                  let endEventIndex
+                  if(headerIndex[endEventIndex] != undefined){
+                      // console.log(`employee: ${employee}... headerIndex[eventStartDate]: ${JSON.stringify(headerIndex[eventStartDate])}`)
+                      endEventIndex = headerIndex[eventEndDate]["i"]
+                  }else{
+                      endEventIndex = headerIndex["endIndex"]
+                      
+                  }
+                        
+                  let range = columnIndexToRange(sheetName, startEventIndex, endEventIndex, sheetIndex)
+
+                  // console.log(`employee: ${employee} startEventIndex: ${startEventIndex} endEventIndex: ${endEventIndex}  range: ${range}`)
+
+                if(isAfter(eventEndDate, endDate)){
+                  eventEndDate = endDate
                 }
-                
-                testUpdateValues(range, valueArray)
-                // console.log(`employee: ${employee} eventStartDate:${eventStartDate} eventEndDate: ${eventEndDate} eventType: ${eventType} range: ${range}`)
 
-    
-            }catch(error){
-                console.error(`error trace ${employee}: ${JSON.signify(employeeEvents)}`)
-            }
+                 let diffDays = findDateDifference(eventStartDate, eventEndDate)
 
-            // 
+                 if(diffDays > maxRangeDifference){
+                   diffDays = findDateDifference(eventStartDate, endDate)
+                 }
 
-            // console.log(`header: ${eventStartDate}  ${JSON.stringify(headerIndex[eventStartDate]["i"])}`)
 
-            // 
+                  let valueArray = []
+                  for(let c = 0; c < diffDays; c++){
+                      valueArray.push(eventType)
 
-           // console.log(`employee: ${employee}, eventType: ${eventType}, eventStartDate: ${eventStartDate}, eventEndDate: ${eventEndDate}`)
+                  }
 
-            // console.log(`sheet start: ${sheetIndex[eventStartDate]}, end ${sheetIndex[eventEndDate]}`)
+                  console.log(`range: ${range} ${eventStartDate}  ${eventEndDate}   diffDays: ${diffDays} valueArray: ${valueArray.length}  max: ${maxRangeDifference}`)
 
-                
-        }
+                  let batchUnit = {
+                    range: range,
+                    values: [valueArray]
+                  }
+                  batchUpdateArray.push(batchUnit)
+                  
+                  // testUpdateValues(range, valueArray)
+                  // console.log(`employee: ${employee} eventStartDate:${eventStartDate} eventEndDate: ${eventEndDate} eventType: ${eventType} range: ${range}`)
 
-        // console.log(`employee: ${employee}, sheetIndex: ${JSON.stringify(sheetIndex)}`)
-        // console.log(`...${JSON.stringify(prepData[employee])}`)
-    }
+      
+              }catch(error){
+                  console.error(error)
+              }
 
-    // console.log(`indices: ${JSON.stringify(indices)}`)
-    // console.log(`keys: ${JSON.stringify(keys)}`)
+          }
+
+      }
+
+       // console.log(`batchUpdateArray: ${JSON.stringify(batchUpdateArray)}`)
+       updateBatchValues(batchUpdateArray)
+
+  }
+
+}
+
+function isAfter(date1, date2){
+  return new Date(date1).valueOf() > new Date(date2).valueOf();
+}
+
+
+function findDateDifference(start, end){
+  const date1 = new Date(start);
+  const date2 = new Date(end);
+  const diffTime = Math.abs(date2 - date1);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  return diffDays + 1
+}
+async function updateBatchValues(data){
+
+  const auth = await getAuthToken();
+
+  const result = await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: spreadsheetId,
+    auth: auth,
+    resource: { data: data, valueInputOption: "USER_ENTERED" }
+     
+  });
+    console.log('cells updated.');
+
 }
 
 
 
-}
 async function main(prepData) {
     setEnvVariables(); 
+    // console.log(JSON.stringify(prepData))
 
      factorVegaDate(prepData) 
     // testGetSpreadSheetRows();
-
-
    // testUpdateValues();
 
     

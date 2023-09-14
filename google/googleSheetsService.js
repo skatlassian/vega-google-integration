@@ -84,12 +84,64 @@ async function updateValues({spreadsheetId, auth, sheetName}) {
 }
 
 
+async function updateBatchValues({spreadsheetId, auth, sheetName}){
+
+  /*
+  var data = [
+    { 
+      range: "Sheet1!A1",   // Update single cell
+      values: [
+    ["A1"]
+      ]
+    },
+    {
+      range: "Sheet1!B1:B3", // Update a column
+      values: [
+    ["B1"],["B2"],["B3"]
+      ]
+    },
+    {
+      range: "Sheet1!C1:E1", // Update a row
+      values: [
+    ["C1","D1","E1"]
+      ]
+    },
+    {
+      range: "Sheet1!F1:H2", // Update a 2d range
+      values: [
+    ["F1", "F2"],
+    ["H1", "H2"]
+      ]
+    }];
+    */
+
+
+
+
+var data = [{"range":"Planner Sheet!JO93:JV93","values":[["ESC","ESC","ESC","ESC","ESC","ESC","ESC","ESC","ESC","ESC","ESC","ESC"]]},{"range":"Planner Sheet!IU93:JV93","values":[[]]},{"range":"Planner Sheet!IX93:JV93","values":[[]]}]
+
+
+
+
+    const result = await sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: spreadsheetId,
+      auth: auth,
+      resource: { data: data, valueInputOption: "USER_ENTERED" }
+       
+    });
+    
+    console.log('%d cells updated.', result.data.updatedCells);
+
+
+}
+
 module.exports = {
   getAuthToken,
   getSpreadSheet,
   getSpreadSheetValues,
   getSpreadSheetRows,
-  updateValues
+  updateValues,
+  updateBatchValues
 }
 
 // npm install @googleapis/docs

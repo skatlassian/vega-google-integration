@@ -13,8 +13,10 @@ async function findDirectReports(){
     let consolidatedDataForPush = {}
 
     console.log("manager", managers)
+    // findCalendarEventsForUsers(["sthottamkara"]); return
+   
     for (let i = 0; i < managers.length; i++){
-        let currentManager = managers[i]
+        let currentManager = managers[i].replace(" ", "")
     
         let query = {
             "query": "query DirectReports($employeeId: ID!) { employee(id: $employeeId) {directReports {displayName id emailAddress isActive}}}",
@@ -85,7 +87,7 @@ async function findCalendarEventsForUsers(usersToQuery){
                         },
                     "operationName":"CalendarEvents"
                     }
-                   // console.log("calendarQuery, ", JSON.stringify(calendarQuery))
+                   console.log("calendarQuery, ", JSON.stringify(calendarQuery))
             
                 
                 await queryVega.callVega(calendarQuery).then(function(calendarQueryResponse){
@@ -155,37 +157,15 @@ async function findCalendarEventsForUsers(usersToQuery){
             for(let dn = 0; dn < vvv.length; dn ++){
                 console.log("", vvv[dn])            
             }*/
-            
-            
+      
 
-
-
-
-          
-
-}
-
-
-
-
-function setEnvVariables(){
-    console.log(`gCloudProject: ${gCloudProject}, gAppCredentials: ${gAppCredentials}`)
-    // process.env['GCLOUD_PROJECT'] = gCloudProject;
-    // process.env['GOOGLE_APPLICATION_CREDENTIALS'] = gAppCredentials;
-  
 }
 
 
 function vegaMain(){
-   // setEnvVariables()
+
     findDirectReports()
     
-    
-    
-    /*let auth = getAuthToken()
-    googleService.modalData()
-    console.log(`auth: ${auth}`)
-    */
 
     
 }
@@ -194,6 +174,9 @@ vegaMain()
 
 module.exports = { findDirectReports }
 module.exports = { findCalendarEventsForUsers }
+
+
+
 
 
 /*
