@@ -337,7 +337,7 @@ if(prepData != undefined){
 async function main(prepData) {
     setEnvVariables(); 
 
-     factorVegaDate(prepData)
+     factorVegaDate(prepData) 
     // testGetSpreadSheetRows();
 
 
