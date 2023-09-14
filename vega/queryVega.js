@@ -70,4 +70,3 @@ callVega(postData).then(function(response){
 
 
 module.exports = { callVega }
-

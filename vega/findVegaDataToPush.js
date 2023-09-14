@@ -1,12 +1,16 @@
 const queryVega = require('./queryVega')
+const googleService = require('../google/updateTeamPlanerSheet')
 
 const PropertiesReader = require('properties-reader')
 const properties = PropertiesReader('../env.properties')
+const gCloudProject = properties.get("GCLOUD_PROJECT")
+const gAppCredentials = properties.get("GOOGLE_APPLICATION_CREDENTIALS")
 
 
-function findDirectReports(){
+async function findDirectReports(){
    
     const managers =  `${properties.get("MANAGERS_LIST")}`.replace(" ", "").split(",")
+    let consolidatedDataForPush = {}
 
     console.log("manager", managers)
     for (let i = 0; i < managers.length; i++){
@@ -18,25 +22,32 @@ function findDirectReports(){
                 "operationName":"DirectReports"
             }
     
+        // console.log(`query: ${JSON.stringify(query)}`)
+        
         queryVega.callVega(query).then(function(response){
             
                        
                 if(response.message == "success"){
-                    let data =  response.data
-                    let directReportsJson = data.data.employee.directReports
-                    //console.log("directReportsJson: ", directReportsJson)
-                    let usersToQuery = []
-                    for (let k = 0; k < directReportsJson.length; k++){
-                        let currentPoint = directReportsJson[k]
-                                                
-                        if(currentPoint.isActive == true){                            
-                            usersToQuery.push(currentPoint.id)
-                        }  
-                        
+                    try{
+                        let data =  response.data
+                        let directReportsJson = data.data.employee.directReports
+                        // console.log("directReportsJson: ", directReportsJson)
+                        let usersToQuery = []
+                        for (let k = 0; k < directReportsJson.length; k++){
+                            let currentPoint = directReportsJson[k]
+                                                    
+                            if(currentPoint.isActive == true){                            
+                                usersToQuery.push(currentPoint.id)
+                            }  
+                            
+                        }
+    
+                        // console.log(`usersToQuery: ${usersToQuery}`)
+                         findCalendarEventsForUsers(usersToQuery)
+    
+                    }catch(error){
+                        console.error(`error finding direct reports for ${currentManager}: ${error}`)
                     }
-
-                    console.log(`usersToQuery: ${usersToQuery}`)
-                    findCalendarEventsForUsers(usersToQuery)
   
 
             }else{
@@ -55,6 +66,7 @@ async function findCalendarEventsForUsers(usersToQuery){
                   //test for single user
                   // usersToQuery = ["adeo"]
                 let prepData = {}
+                let vvv = []
 
                 let startDate = `${properties.get("QUERY_START_DATE")}`.trim()
                 let endDate = `${properties.get("QUERY_END_DATE")}`.trim()
@@ -65,7 +77,7 @@ async function findCalendarEventsForUsers(usersToQuery){
 
                     
                    // console.log(`emp: ${usersToQuery[empCounter]}`)
-                    let calendarQuery = {"query":"query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeIdIn: [String!]) { calendarEvents( startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte,  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+                    let calendarQuery = {"query":"query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeIdIn: [String!]) { calendarEvents( startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte,  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id displayName emailAddress}  } } }",
                     "variables":{
                         "employeeIdIn":usersToQuery,
                         "startDatetimeGte":`${startDate}`,
@@ -73,28 +85,48 @@ async function findCalendarEventsForUsers(usersToQuery){
                         },
                     "operationName":"CalendarEvents"
                     }
-                //  console.log("calendarQuery, ", JSON.stringify(calendarQuery))
+                  // console.log("calendarQuery, ", JSON.stringify(calendarQuery))
             
                 
                 await queryVega.callVega(calendarQuery).then(function(calendarQueryResponse){
                     
                     let itemsArray = []
                     if(calendarQueryResponse.message == "success"){
+                        try{
+
+                        }catch(Exception){
+                            console.error(`error finding direct reports for ${currentManager}: ${error.message}`)
+                        }
+  
                         itemsArray = calendarQueryResponse.data.data.calendarEvents.items
     
                         for(let m =0; m < itemsArray.length; m++){
                             let item = itemsArray[m]
                             let itemEmployee = item.employee
+                            let mail = itemEmployee.emailAddress
+                            let displayName = itemEmployee.displayName
     
                             let eventBlob = {}
                             let employeeUserName = itemEmployee.id
-                            eventBlob.employeeEmail = itemEmployee.emailAddress
+                            eventBlob.employeeEmail = mail
+                            eventBlob.displayName = displayName
                             eventBlob.eventCreationDate = item.creationDate
                             eventBlob.eventStartDate = item.startDatetime
                             eventBlob.eventEndDate = item.endDatetime
                             eventBlob.eventType  = item.type
                             // console.log(`eventBlob: ${eventBlob}`)
-    
+                            
+                            
+                            /*
+                            if(vvv.includes(employeeUserName)){
+                                // console.log(`mail ${mail} already added`)
+                                
+                            }else{
+                                vvv.push(employeeUserName)
+                            }
+                            */
+
+
                             let currentHold = []
                             if(prepData[employeeUserName] != undefined){
                                 currentHold = prepData[employeeUserName]
@@ -115,8 +147,21 @@ async function findCalendarEventsForUsers(usersToQuery){
                                       
     
                 })
+
+            // googleService.sayHello(prepData)
+            // googleService.main(prepData)
+            googleService.main(prepData)
+            // console.log("prepData: ", JSON.stringify(prepData))  
             
-            console.log("prepData: ", JSON.stringify(prepData))            
+            /*
+            for(let dn = 0; dn < vvv.length; dn ++){
+                console.log("", vvv[dn])            
+            }*/
+            
+            
+
+
+
 
           
 
@@ -126,7 +171,27 @@ function prepareDataForGSheetPush(){
     // function to model the data for gsheet push from findCalendarEventsForUsers function 
 }
 
-findDirectReports()
+
+
+
+
+
+function setEnvVariables(){
+    console.log(`gCloudProject: ${gCloudProject}, gAppCredentials: ${gAppCredentials}`)
+    // process.env['GCLOUD_PROJECT'] = gCloudProject;
+    // process.env['GOOGLE_APPLICATION_CREDENTIALS'] = gAppCredentials;
+  
+}
+
+
+function vegaMain(){
+    setEnvVariables()
+     findDirectReports()
+    
+}
+
+vegaMain()
+
 module.exports = { findDirectReports }
 module.exports = { findCalendarEventsForUsers }
 
