@@ -8,15 +8,17 @@ const gAppCredentials = properties.get("GOOGLE_APPLICATION_CREDENTIALS")
 
 
 async function findDirectReports(){
+    console.log(`Code started... give it a few seconds to create magic...!`)
    
     const managers =  `${properties.get("MANAGERS_LIST")}`.replace(" ", "").split(",")
     let consolidatedDataForPush = {}
 
-    console.log("manager", managers)
+    
     // findCalendarEventsForUsers(["sthottamkara"]); return
    
     for (let i = 0; i < managers.length; i++){
         let currentManager = managers[i].replace(" ", "")
+    
     
         let query = {
             "query": "query DirectReports($employeeId: ID!) { employee(id: $employeeId) {directReports {displayName id emailAddress isActive}}}",
@@ -45,7 +47,7 @@ async function findDirectReports(){
                         }
     
                         // console.log(`usersToQuery: ${usersToQuery}`)
-                         findCalendarEventsForUsers(usersToQuery)
+                         findCalendarEventsForUsers(usersToQuery, currentManager)
     
                     }catch(error){
                         console.error(`error finding direct reports for ${currentManager}: ${error}`)
@@ -62,7 +64,7 @@ async function findDirectReports(){
     
 }
 
-async function findCalendarEventsForUsers(usersToQuery){
+async function findCalendarEventsForUsers(usersToQuery, currentManager){
                   // console.log("usersToQuery, ", usersToQuery)
 
                   //test for single user
@@ -73,8 +75,7 @@ async function findCalendarEventsForUsers(usersToQuery){
                 let startDate = `${properties.get("QUERY_START_DATE")}`.trim()
                 let endDate = `${properties.get("QUERY_END_DATE")}`.trim()
 
-                console.log(`startDate: ${startDate}`)
-                console.log(`endDate: ${endDate}`)
+                console.log(`Manager: ${currentManager}, startDate: ${startDate}, endDate ${endDate}, usersToQuery: ${usersToQuery}`)
                 
 
                     
@@ -87,7 +88,7 @@ async function findCalendarEventsForUsers(usersToQuery){
                         },
                     "operationName":"CalendarEvents"
                     }
-                   console.log("calendarQuery, ", JSON.stringify(calendarQuery))
+                   // console.log("calendarQuery, ", JSON.stringify(calendarQuery))
             
                 
                 await queryVega.callVega(calendarQuery).then(function(calendarQueryResponse){

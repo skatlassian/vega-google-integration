@@ -88,7 +88,7 @@ function setEnvVariables(){
     let endDate = `${properties.get("QUERY_END_DATE")}`.trim()
     let hardStop = `${properties.get("QUERY_STOP_LIMIT")}`.trim()
 
-    console.log(`currentRow.length: ${currentRow.length} startDate: ${startDate}, endDate: ${endDate}`)
+    // console.log(`currentRow.length: ${currentRow.length} startDate: ${startDate}, endDate: ${endDate}`)
     //currentRow.length
     for(let i = 7; i <= currentRow.length; i++){
         let currentCellValue = currentRow[i]            
@@ -133,7 +133,7 @@ function setEnvVariables(){
  }
  
  function getEmployeeIndexes(rows, dateRowIndex){
-    console.log(`total size: ${rows.length}, dateRowIndex: ${Number(dateRowIndex) + 1}`)
+    // console.log(`total size: ${rows.length}, dateRowIndex: ${Number(dateRowIndex) + 1}`)
     let employeeRowIndexObject = {}
     for (let i = Number(dateRowIndex) + 1; i < rows.length; i++){
         try{
@@ -292,7 +292,7 @@ async function factorVegaDate(prepData){
 
                   }
 
-                  console.log(`range: ${range} ${eventStartDate}  ${eventEndDate}   diffDays: ${diffDays} valueArray: ${valueArray.length}  max: ${maxRangeDifference}`)
+                  // console.log(`range: ${range} ${eventStartDate}  ${eventEndDate}   diffDays: ${diffDays} valueArray: ${valueArray.length}  max: ${maxRangeDifference}`)
 
                   let batchUnit = {
                     range: range,
