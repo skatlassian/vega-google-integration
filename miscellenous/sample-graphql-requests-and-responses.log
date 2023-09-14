@@ -80,3 +80,31 @@ https://vega.us-east-1.prod.atl-paas.net/graphql
     "variables":{"employeeIdIn":["adeo","vkgan"]},
     "operationName":"CalendarEvents"
 }
+
+
+-- amol directReports
+usersToQuery: kbalachandran,aalagappan,adeo,amanojkumar,sthottamkara,smohan,nravi,skavatekar,pjain4,rshah4
+{"query":"query CalendarEvents($employeeIdIn: [String!]) { calendarEvents(  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+"variables":{"employeeIdIn":["kbalachandran","aalagappan","adeo","amanojkumar","sthottamkara","smohan","nravi","skavatekar","pjain4","rshah4"]},
+"operationName":"CalendarEvents"
+}
+
+-- fetch by creation Date
+{
+"query": "query CalendarEvents($creationDateGt: Date) { calendarEvents(  creationDateGt: $creationDateGt) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+    "variables":{"creationDateGt":"2023-09-01"},
+    "operationName":"CalendarEvents"
+}
+
+
+--date and name
+
+{
+"query": "query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeId: String) { calendarEvents(  startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte, employeeId: $employeeId) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+    "variables":{
+        "employeeId":"adeo",
+        "startDatetimeGte":"2023-08-01",
+        "endDatetimeGte": "2023-09-01"
+        },
+    "operationName":"CalendarEvents"
+}

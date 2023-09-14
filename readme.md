@@ -16,6 +16,11 @@ GOOGLE_APPLICATION_CREDENTIALS=./my-google-svc-account.json
 VEGA_URL=https://vega.us-east-1.prod.atl-paas.net/graphql
 # Configure Manager Mapping (this is subject to change, as of now we are fetching reportees of these two managers and update events)
 MANAGERS_LIST=vkgan, alonare
+QUERY_START_DATE=2023-08-01
+QUERY_END_DATE=2023-09-01
+QUERY_STOP_LIMIT=2023-12-31
+QUERY_DATE_ROW_INDEX=39
+
 ```
 
 
