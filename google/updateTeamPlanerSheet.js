@@ -303,11 +303,11 @@ if(prepData != undefined){
                 }
                 
                 testUpdateValues(range, valueArray)
-                console.log(`employee: ${employee} eventStartDate:${eventStartDate} eventEndDate: ${eventEndDate} eventType: ${eventType} range: ${range}`)
+                // console.log(`employee: ${employee} eventStartDate:${eventStartDate} eventEndDate: ${eventEndDate} eventType: ${eventType} range: ${range}`)
 
     
             }catch(error){
-                console.error(error)
+                console.error(`error trace ${employee}: ${JSON.signify(employeeEvents)}`)
             }
 
             // 

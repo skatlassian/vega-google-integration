@@ -96,3 +96,7 @@ Currently, we don't have permission to create project in our atlassian's gmail b
 [Prod](https://vega.prod.atl-paas.net/graphql) <br />
 [Dev](https://vega.dev.atl-paas.net/graphql) <br />
 [Stage](https://vega.staging.atl-paas.net/graphql) <br />
+
+
+## Play sheet
+[Sheet](https://docs.google.com/spreadsheets/d/1rF87sKjHMW8wH-2VR-ORl6diPSlK6a3wjJt4ZbvhcRI/edit#gid=812939268)
