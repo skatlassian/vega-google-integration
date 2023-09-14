@@ -8,3 +8,4 @@ play
 
 # Ignore my google service json file
 google/my-google-svc-account.json
+vega/my-google-svc-account.json
