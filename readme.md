@@ -45,6 +45,8 @@ These packages are required to create vega tokens which is used to authenticate 
 
 # install SLAuth CLI https://developer.atlassian.com/platform/slauth/cli/install/
 atlas plugin install -n slauth 
+
+# 
 ```
 
 ## Steps used to integrate with google sheet

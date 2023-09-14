@@ -116,7 +116,7 @@ const GApplicationCredentialsCommand = "export GOOGLE_APPLICATION_CREDENTIALS=" 
 
      // testGetSpreadSheet();
      // testGetSpreadSheetValues();
-     testGetSpreadSheetRows();
+     // testGetSpreadSheetRows();
      testUpdateValues();
   }
   

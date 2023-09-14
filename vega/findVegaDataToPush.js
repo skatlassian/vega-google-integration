@@ -77,15 +77,15 @@ async function findCalendarEventsForUsers(usersToQuery){
 
                     
                    // console.log(`emp: ${usersToQuery[empCounter]}`)
-                    let calendarQuery = {"query":"query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeIdIn: [String!]) { calendarEvents( startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte,  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id displayName emailAddress}  } } }",
+                    let calendarQuery = {"query":"query CalendarEvents($startDatetimeGte: Date, $startDatetimeLte: Date, $employeeIdIn: [String!]) { calendarEvents( startDatetimeGte: $startDatetimeGte,  startDatetimeLte: $startDatetimeLte,  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id displayName emailAddress}  } } }",
                     "variables":{
                         "employeeIdIn":usersToQuery,
                         "startDatetimeGte":`${startDate}`,
-                        "endDatetimeGte": `${endDate}`
+                        "startDatetimeLte": `${endDate}`
                         },
                     "operationName":"CalendarEvents"
                     }
-                  // console.log("calendarQuery, ", JSON.stringify(calendarQuery))
+                   // console.log("calendarQuery, ", JSON.stringify(calendarQuery))
             
                 
                 await queryVega.callVega(calendarQuery).then(function(calendarQueryResponse){
@@ -135,7 +135,6 @@ async function findCalendarEventsForUsers(usersToQuery){
                             currentHold.push(eventBlob)
                             prepData[employeeUserName] = currentHold
     
-    
                         }
     
     
@@ -148,9 +147,8 @@ async function findCalendarEventsForUsers(usersToQuery){
     
                 })
 
-            // googleService.sayHello(prepData)
-            // googleService.main(prepData)
-            googleService.main(prepData)
+
+             googleService.main(prepData)
             // console.log("prepData: ", JSON.stringify(prepData))  
             
             /*
@@ -167,12 +165,6 @@ async function findCalendarEventsForUsers(usersToQuery){
 
 }
 
-function prepareDataForGSheetPush(){
-    // function to model the data for gsheet push from findCalendarEventsForUsers function 
-}
-
-
-
 
 
 
@@ -185,8 +177,16 @@ function setEnvVariables(){
 
 
 function vegaMain(){
-    setEnvVariables()
-     findDirectReports()
+   // setEnvVariables()
+    findDirectReports()
+    
+    
+    
+    /*let auth = getAuthToken()
+    googleService.modalData()
+    console.log(`auth: ${auth}`)
+    */
+
     
 }
 
