@@ -1,7 +1,7 @@
 
 const { google } = require('googleapis');
 const sheets = google.sheets('v4');
-const queryVega = require('../vega/queryVega')
+const queryVega = require('../miscellenous/queryVega')
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const {
@@ -90,6 +90,7 @@ function setEnvVariables(){
 
     // console.log(`currentRow.length: ${currentRow.length} startDate: ${startDate}, endDate: ${endDate}`)
     //currentRow.length
+    //7 because first 7 rows are vertical headers, from 8th date starts
     for(let i = 7; i <= currentRow.length; i++){
         let currentCellValue = currentRow[i]            
         
@@ -345,8 +346,8 @@ function columnIndexToRangeForSearch(sheetTitle, columnIndex1, columnIndex2, row
   const columnName1 = columnIndexToLetter(columnIndex1);
   const columnName2 = columnIndexToLetter(columnIndex2);
 
-  console.log(`${columnIndex1}: ${columnName1}    ${columnIndex2}: ${columnName2}`)
-  console.log(`====>> ${sheetTitle}!${columnName1}${row1}:${columnName2}${row2}`)
+  // console.log(`${columnIndex1}: ${columnName1}    ${columnIndex2}: ${columnName2}`)
+  // console.log(`====>> ${sheetTitle}!${columnName1}${row1}:${columnName2}${row2}`)
 
   
   return `${sheetTitle}!${columnName1}${row1}:${columnName2}${row2}`;

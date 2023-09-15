@@ -1,4 +1,4 @@
-const queryVega = require('./queryVega')
+const queryVega = require('../miscellenous/queryVega')
 const googleService = require('../google/updateTeamPlanerSheet')
 
 const PropertiesReader = require('properties-reader')
@@ -14,7 +14,7 @@ async function findDirectReports(){
     let consolidatedDataForPush = {}
 
     
-    // findCalendarEventsForUsers(["rshah4", "pjain4"]); return
+    //  findCalendarEventsForUsers(["adeo"]); return
    
     for (let i = 0; i < managers.length; i++){
         let currentManager = managers[i].replace(" ", "")

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const authenticateVega = require('./getVegaToken')
+const authenticateVega = require('../vega/getVegaToken')
 const PropertiesReader = require('properties-reader');
 const properties = PropertiesReader('../env.properties');
 

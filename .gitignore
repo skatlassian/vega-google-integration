@@ -4,8 +4,10 @@ node_modules
 # Ignore my properties file
 env.properties
 
+# test folder to try stuffs
 play
 
 # Ignore my google service json file
+my-google-svc-account.json
 google/my-google-svc-account.json
 vega/my-google-svc-account.json
