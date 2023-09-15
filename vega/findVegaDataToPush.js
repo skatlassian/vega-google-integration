@@ -14,7 +14,7 @@ async function findDirectReports(){
     let consolidatedDataForPush = {}
 
     
-    // findCalendarEventsForUsers(["sthottamkara"]); return
+    // findCalendarEventsForUsers(["rshah4", "pjain4"]); return
    
     for (let i = 0; i < managers.length; i++){
         let currentManager = managers[i].replace(" ", "")

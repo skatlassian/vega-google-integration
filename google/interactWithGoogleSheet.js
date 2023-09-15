@@ -3,6 +3,7 @@ const {
     getSpreadSheet,
     getSpreadSheetValues,
     getSpreadSheetRows,
+    getSpreadSheetRows2,
     updateValues,
     updateBatchValues
   } = require('./googleSheetsService.js');
@@ -64,7 +65,7 @@ const GApplicationCredentialsCommand = "export GOOGLE_APPLICATION_CREDENTIALS=" 
   async function testGetSpreadSheetRows() {
     try {
       const auth = await getAuthToken();
-      const response = await getSpreadSheetRows({
+      const response = await getSpreadSheetRows2({
         spreadsheetId,
         sheetName,
         auth
@@ -118,9 +119,9 @@ async function testBatchUpdate() {
 
      // testGetSpreadSheet();
      // testGetSpreadSheetValues();
-     // testGetSpreadSheetRows();
+     testGetSpreadSheetRows();
      // testUpdateValues();
-     testBatchUpdate()
+     // testBatchUpdate()
   }
   
   main()

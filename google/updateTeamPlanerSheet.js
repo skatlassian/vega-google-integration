@@ -237,14 +237,20 @@ async function factorVegaDate(prepData){
 
 
       let keys = Object.keys(prepData)
+      let existingDataInSheet = await fetchExistingDataFromSheet(indices)
+      let sheetDataConflict = {}
+      let dataToPushToVega = {}
 
+       
       let headerIndex = indices["headerIndex"]
       // console.log(`headerIndex: ${JSON.stringify(headerIndex)}`)
 
       let batchUpdateArray = []
       for(let k in keys){
           let employee = keys[k]
-          let sheetIndex = indices["employeeIndex"][employee]
+          let sheetIndex = indices["employeeIndex"][employee] //index of employee row
+
+          console.log(`Employee: ${employee}, index: ${sheetIndex}`)
 
           if(sheetIndex == undefined){
             continue
@@ -283,12 +289,27 @@ async function factorVegaDate(prepData){
 
                  if(diffDays > maxRangeDifference){
                    diffDays = findDateDifference(eventStartDate, endDate)
-                 }
-
+                 }                                  
 
                   let valueArray = []
+                  
                   for(let c = 0; c < diffDays; c++){
-                      valueArray.push(eventType)
+                      let currentCol = startEventIndex + c
+                      let searchHash = `${sheetIndex}#${currentCol}`
+                      // console.log(`Search hash...${searchHash}`)
+                      let searchValue = existingDataInSheet[searchHash]
+                      if(searchValue != undefined && searchValue != eventType){
+
+                        
+                        sheetDataConflict[searchHash] = searchValue
+                        valueArray.push(searchValue)
+                        
+                        // console.log(`Search Hash ${searchHash} ##  ${searchValue} && eventType: ${eventType}`)
+
+                      }else{
+                        valueArray.push(eventType)
+                      }
+                      
 
                   }
 
@@ -313,11 +334,80 @@ async function factorVegaDate(prepData){
       }
 
        // console.log(`batchUpdateArray: ${JSON.stringify(batchUpdateArray)}`)
+       console.log(`sheetDataConflict: ${JSON.stringify(sheetDataConflict)}`)
        updateBatchValues(batchUpdateArray)
 
   }
 
 }
+
+function columnIndexToRangeForSearch(sheetTitle, columnIndex1, columnIndex2, row1, row2) {
+  const columnName1 = columnIndexToLetter(columnIndex1);
+  const columnName2 = columnIndexToLetter(columnIndex2);
+
+  console.log(`${columnIndex1}: ${columnName1}    ${columnIndex2}: ${columnName2}`)
+  console.log(`====>> ${sheetTitle}!${columnName1}${row1}:${columnName2}${row2}`)
+
+  
+  return `${sheetTitle}!${columnName1}${row1}:${columnName2}${row2}`;
+};
+
+async function fetchExistingDataFromSheet(modal) {
+
+  const auth = await getAuthToken();
+
+  
+  // console.log(`modal: ${JSON.stringify(modal["headerIndex"])}`)
+  let headerMin = modal["headerIndex"]["startIndex"]
+  let headerMax = modal["headerIndex"]["endIndex"]
+
+ 
+  // console.log(`modal: ${JSON.stringify(modal["employeeIndex"])}`)
+  let empModal = modal["employeeIndex"]
+
+  let rowMax = Math.max.apply(null,Object.keys(empModal).map(function(x){ return empModal[x] }));
+  let rowMin = Math.min.apply(null,Object.keys(empModal).map(function(x){ return empModal[x] }));
+
+  let rangeN = columnIndexToRangeForSearch(sheetName, headerMin, headerMax, rowMin, rowMax)
+
+  console.log(`max: ${rowMax}, min: ${rowMin} range: ${rangeN}`)
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    auth,
+    range: rangeN
+  });
+  const rows = res.data.values;
+  if (!rows || rows.length === 0) {
+    console.log('No data found.');
+    return {};
+  }
+
+  let cRow = rowMin
+  let cCol = headerMin
+  
+  console.log(`${cRow}:${cCol}==> ${rows.length}   ${(headerMax - headerMin)}`)
+
+  let currentSheetValueObject = {}
+  for(let k = 0; k < rows.length; k++){
+    let row = rows[k]
+    cCol = headerMin
+    for(let i =0; i < (headerMax - headerMin); i++){
+      if(row[i] != undefined && row[i] != "" ){
+        // console.log(`${cRow}:${cCol}==># ${row[i]}`)
+        let key = `${cRow}#${cCol}`
+        currentSheetValueObject[key] = row[i]
+      }
+      cCol++;
+    }
+    cRow++;
+
+  }
+  // console.log(`currentSheetValueObject: ${JSON.stringify(currentSheetValueObject)}`)
+  return currentSheetValueObject;
+}
+
+
 
 function isAfter(date1, date2){
   return new Date(date1).valueOf() > new Date(date2).valueOf();
