@@ -78,11 +78,17 @@ Currently, we don't have permission to create project in our atlassian's gmail b
 
 
 ## Github URL
-[vega-google-integration](https://github.com/adeo-atlassian/vega-google-integration)
+[Githubb](https://github.com/adeo-atlassian/vega-google-integration)
+[Bitbucket](https://bitbucket.org/atlassian/vega-google-integration/src/master/)
 
-## Developers/Contributors
-[Anupam Singh Deo](https://directory.prod.atl-paas.net/employees/adeo) <br />
-[Sandip Shrivastava](https://directory.prod.atl-paas.net/employees/sshrivastava)
+## Contributors
+[Voon Kiat Gan](https://directory.prod.atl-paas.net/employees/vkgan) - Lead <br /> 
+[Sunil Kavatekar](https://directory.prod.atl-paas.net/employees/skavatekar) - Member<br /> 
+[Deepak Sidhpura](https://directory.prod.atl-paas.net/employees/dsidhpura) - Member<br /> 
+[Sandip Shrivastava](https://directory.prod.atl-paas.net/employees/sshrivastava) - Developer<br /> 
+[Anupam Singh Deo](https://directory.prod.atl-paas.net/employees/adeo) - Developer<br /> 
+
+
 
 
 
