@@ -136,9 +136,13 @@ function setEnvVariables(){
  function getEmployeeIndexes(rows, dateRowIndex){
     // console.log(`total size: ${rows.length}, dateRowIndex: ${Number(dateRowIndex) + 1}`)
     let employeeRowIndexObject = {}
+    let uniqueEmployeeColumnIndex = properties.get("EMPLOYEE_COLUMN_INDEX") //
+    if (uniqueEmployeeColumnIndex == undefined){
+      uniqueEmployeeColumnIndex = 5
+    }
     for (let i = Number(dateRowIndex) + 1; i < rows.length; i++){
         try{
-            let employee = rows[i][5]
+            let employee = rows[i][uniqueEmployeeColumnIndex]
             employeeRowIndexObject[employee] = i + 1
             // console.log(`row: ${employee}`) 
         }catch(Exception){
@@ -227,18 +231,24 @@ function columnIndexToRange(sheetTitle, columnIndex1, columnIndex2, row) {
 
 
 async function factorVegaDate(prepData){
+  console.log(`Preparing the data, adding business logic, enabling comparison module and ...more.`)
+  await prepData
+  if(prepData == undefined){
+    return
+  }
+  let indices = await getSpreadSheetRows()
+  let existingDataInSheet = await fetchExistingDataFromSheet(indices)
 
   if(prepData != undefined){
       // console.log(`from prep: ${JSON.stringify(prepData)}`)
-      let indices = {}
-      indices = await getSpreadSheetRows()
+      // let indices = {}; indices = await getSpreadSheetRows()
       let startDate = `${properties.get("QUERY_START_DATE")}`.trim()
       let endDate = `${properties.get("QUERY_END_DATE")}`.trim()
       let maxRangeDifference = findDateDifference(startDate, endDate)
 
 
       let keys = Object.keys(prepData)
-      let existingDataInSheet = await fetchExistingDataFromSheet(indices)
+      // let existingDataInSheet = await fetchExistingDataFromSheet(indices)
       let sheetDataConflict = {}
       let dataToPushToVega = {}
 
@@ -251,9 +261,10 @@ async function factorVegaDate(prepData){
           let employee = keys[k]
           let sheetIndex = indices["employeeIndex"][employee] //index of employee row
 
-          console.log(`Employee: ${employee}, index: ${sheetIndex}`)
+          // console.log(`Employee: ${employee}, index: ${sheetIndex}`)
 
           if(sheetIndex == undefined){
+            console.log(`No valid rows found for engineer ${employee} in sheet` )
             continue
           }
 
@@ -263,11 +274,10 @@ async function factorVegaDate(prepData){
               try{
                   let blob = employeeEvents[m]
               
-                  //console.log(`Blobs: ${JSON.stringify(blob)}`)
+                  // console.log(`Blobs: ${JSON.stringify(blob)}`)
                   let eventStartDate = blob.eventStartDate.slice(0, 10);
                   let eventEndDate = blob.eventEndDate.slice(0, 10);
                   let eventType = blob.eventType.id
-      
                   let startEventIndex = headerIndex[eventStartDate]["i"]
                   let endEventIndex
                   if(headerIndex[endEventIndex] != undefined){
@@ -297,11 +307,12 @@ async function factorVegaDate(prepData){
                   for(let c = 0; c < diffDays; c++){
                       let currentCol = startEventIndex + c
                       let searchHash = `${sheetIndex}#${currentCol}`
-                      // console.log(`Search hash...${searchHash}`)
                       let searchValue = existingDataInSheet[searchHash]
+                      // console.log(`Search hash: ${eventStartDate}: ${range} ${sheetIndex}:${currentCol}, sheet val: ${searchValue}, vega value: ${eventType}`)
+
                       if(searchValue != undefined && searchValue != eventType){
 
-                        
+                        console.log(`conflict or multi event:@${employee} ${sheetIndex}: ${eventStartDate}(+)${c}, sheet val: ${searchValue}, vega value: ${eventType}`)
                         sheetDataConflict[searchHash] = searchValue
                         valueArray.push(searchValue)
                         
@@ -335,8 +346,8 @@ async function factorVegaDate(prepData){
       }
 
        // console.log(`batchUpdateArray: ${JSON.stringify(batchUpdateArray)}`)
-       console.log(`sheetDataConflict: ${JSON.stringify(sheetDataConflict)}`)
-       updateBatchValues(batchUpdateArray)
+       // console.log(`sheetDataConflict: ${JSON.stringify(sheetDataConflict)}`)
+      updateBatchValues(batchUpdateArray)
 
   }
 
@@ -371,7 +382,7 @@ async function fetchExistingDataFromSheet(modal) {
 
   let rangeN = columnIndexToRangeForSearch(sheetName, headerMin, headerMax, rowMin, rowMax)
 
-  console.log(`max: ${rowMax}, min: ${rowMin} range: ${rangeN}`)
+  // console.log(`max: ${rowMax}, min: ${rowMin} range: ${rangeN}`)
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
@@ -380,14 +391,14 @@ async function fetchExistingDataFromSheet(modal) {
   });
   const rows = res.data.values;
   if (!rows || rows.length === 0) {
-    console.log('No data found.');
+    console.log(`No vega data found in sheet for the range: ${rangeN}.`);
     return {};
   }
 
   let cRow = rowMin
   let cCol = headerMin
   
-  console.log(`${cRow}:${cCol}==> ${rows.length}   ${(headerMax - headerMin)}`)
+  // console.log(`${cRow}:${cCol}==> ${rows.length}   ${(headerMax - headerMin)}`)
 
   let currentSheetValueObject = {}
   for(let k = 0; k < rows.length; k++){
@@ -420,10 +431,14 @@ function findDateDifference(start, end){
   const date2 = new Date(end);
   const diffTime = Math.abs(date2 - date1);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-  return diffDays + 1
+  if(diffDays == 0){
+    return diffDays + 1
+  }
+  return diffDays 
 }
 async function updateBatchValues(data){
 
+  console.log('pushing data through google batch API...');
   const auth = await getAuthToken();
 
   const result = await sheets.spreadsheets.values.batchUpdate({
@@ -440,9 +455,8 @@ async function updateBatchValues(data){
 
 async function main(prepData) {
     setEnvVariables(); 
-    // console.log(JSON.stringify(prepData))
 
-     factorVegaDate(prepData) 
+    factorVegaDate(prepData) 
     // testGetSpreadSheetRows();
    // testUpdateValues();
 
@@ -452,8 +466,10 @@ async function main(prepData) {
 
 
  main()
-
- module.exports = { main }
-
  
  
+ module.exports = { 
+    main
+  };
+
+

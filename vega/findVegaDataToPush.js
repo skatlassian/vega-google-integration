@@ -3,21 +3,22 @@ const googleService = require('../google/updateTeamPlanerSheet')
 
 const PropertiesReader = require('properties-reader')
 const properties = PropertiesReader('../env.properties')
-const gCloudProject = properties.get("GCLOUD_PROJECT")
-const gAppCredentials = properties.get("GOOGLE_APPLICATION_CREDENTIALS")
+
 
 
 async function findDirectReports(){
     console.log(`Code started... give it a few seconds to create magic...!`)
+
    
     const managers =  `${properties.get("MANAGERS_LIST")}`.replace(" ", "").split(",")
-    let consolidatedDataForPush = {}
+    let consolidatedVegaData = {}
 
     
     //  findCalendarEventsForUsers(["adeo"]); return
-   
+    console.log(`Search range in the period ${properties.get("QUERY_START_DATE")} and ${properties.get("QUERY_END_DATE")}. `)
     for (let i = 0; i < managers.length; i++){
         let currentManager = managers[i].replace(" ", "")
+        console.log(`Finding ${currentManager}'s associates from vega.. `)
     
     
         let query = {
@@ -28,7 +29,8 @@ async function findDirectReports(){
     
         // console.log(`query: ${JSON.stringify(query)}`)
         
-        queryVega.callVega(query).then(function(response){
+        let currentManagerDirects = await queryVega.callVega(query).then(function(response){
+                let usersToQuery = []
             
                        
                 if(response.message == "success"){
@@ -36,7 +38,7 @@ async function findDirectReports(){
                         let data =  response.data
                         let directReportsJson = data.data.employee.directReports
                         // console.log("directReportsJson: ", directReportsJson)
-                        let usersToQuery = []
+                        
                         for (let k = 0; k < directReportsJson.length; k++){
                             let currentPoint = directReportsJson[k]
                                                     
@@ -47,7 +49,7 @@ async function findDirectReports(){
                         }
     
                         // console.log(`usersToQuery: ${usersToQuery}`)
-                         findCalendarEventsForUsers(usersToQuery, currentManager)
+                        // findCalendarEventsForUsers(usersToQuery, currentManager)
     
                     }catch(error){
                         console.error(`error finding direct reports for ${currentManager}: ${error}`)
@@ -57,25 +59,33 @@ async function findDirectReports(){
             }else{
                 console.error("could not fetch manager reportees, used query: ", JSON.stringify(query))
             }
+            return usersToQuery
                         
         })
+        let currentManagerDirectsVegaData = await findCalendarEventsForUsers(currentManagerDirects, currentManager)
+        Object.assign(consolidatedVegaData, currentManagerDirectsVegaData)
+        
 
     }
+    // console.log(`consolidatedVegaData: ${JSON.stringify(consolidatedVegaData)}`)
+    console.log(`Data fetched from vega, starting the prepare for push..`)
+    await googleService.main(consolidatedVegaData)
     
 }
 
 async function findCalendarEventsForUsers(usersToQuery, currentManager){
-                  // console.log("usersToQuery, ", usersToQuery)
 
-                  //test for single user
-                  // usersToQuery = ["adeo"]
+                // uncomment below line for testing a single user
+                
+                // usersToQuery = ["sdegroot"]; console.log("usersToQuery, ", usersToQuery)
+
                 let prepData = {}
                 let vvv = []
 
                 let startDate = `${properties.get("QUERY_START_DATE")}`.trim()
                 let endDate = `${properties.get("QUERY_END_DATE")}`.trim()
 
-                console.log(`Manager: ${currentManager}, startDate: ${startDate}, endDate ${endDate}, usersToQuery: ${usersToQuery}`)
+                console.log(`Fetching Vega events for engineers: ${usersToQuery}`)
                 
 
                     
@@ -117,6 +127,8 @@ async function findCalendarEventsForUsers(usersToQuery, currentManager){
                             eventBlob.eventStartDate = item.startDatetime
                             eventBlob.eventEndDate = item.endDatetime
                             eventBlob.eventType  = item.type
+
+                            // console.log(`${item.startDatetime}: end: ${item.endDatetime} ---> ${JSON.stringify(item.type)}`)
                             // console.log(`eventBlob: ${eventBlob}`)
                             
                             
@@ -151,7 +163,9 @@ async function findCalendarEventsForUsers(usersToQuery, currentManager){
                 })
 
 
-             googleService.main(prepData)
+            return prepData
+                
+            // googleService.main(prepData)
             // console.log("prepData: ", JSON.stringify(prepData))  
             
             /*
@@ -173,8 +187,7 @@ function vegaMain(){
 
 vegaMain()
 
-module.exports = { findDirectReports }
-module.exports = { findCalendarEventsForUsers }
+module.exports = { findDirectReports, findCalendarEventsForUsers }
 
 
 

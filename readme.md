@@ -13,9 +13,13 @@ GOOGLE_SHEET_NAME=SHEET_NAME
 GOOGLE_SHEET_UPDATE_NAME=SHEET_UPDATE_NAME
 GCLOUD_PROJECT=PROJECT_ID
 GOOGLE_APPLICATION_CREDENTIALS=../my-google-svc-account.json
+# 5th or column F is the employee unique column. Count starts from 0
+EMPLOYEE_COLUMN_INDEX=5
 VEGA_URL=https://vega.us-east-1.prod.atl-paas.net/graphql
+TOKEN_QUERY=atlas slauth token -a vega -e prod --output http 
+
 # Configure Manager Mapping (this is subject to change, as of now we are fetching reportees of these two managers and update events)
-MANAGERS_LIST=vkgan, alonare
+MANAGERS_LIST=alonare,vkgan,sbajaj,iromdhane, astephen, mlita, osandru, vkrishnan,sbajaj,iromdhane, astephen, mlita, osandru, vkrishnan
 QUERY_START_DATE=2023-08-01
 QUERY_END_DATE=2023-09-01
 QUERY_STOP_LIMIT=2023-12-31
@@ -60,7 +64,7 @@ Currently, we don't have permission to create project in our atlassian's gmail b
 * Create a service account from google developer console; give a name, id and email address
 * Once done, click on the three dots to the right of service account and navigate to 'Manage keys'
 * Click on Create new key, choose JSON format, download it and rename it to 'my-google-svc-account.json'
-* Move this key to the project inside the google folder
+* Move this key to the project inside the root folder
 * You will see an email created for the service account, copy that and share that with the sheet you want to interact through script
 * Identify the id of the sheet (observe the URL after '/spreadsheets/d/' till '/edit' starts), save it as 'GOOGLE_SHEET_ID' in properties file
 * Save the sheet name as 'GOOGLE_SHEET_NAME' in properties file, this is the sheet used to read data from
