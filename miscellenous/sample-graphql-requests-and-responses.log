@@ -35,11 +35,7 @@ https://vega.us-east-1.prod.atl-paas.net/graphql
 
 
 
-{
-"query": "query DirectReports($employeeId: ID!) { employee(id: $employeeId) {directReports {displayName employeeId emailAddress firstName lastName jobTitle}}}",
-    "variables":{"employeeId":"vkgan"},
-    "operationName":"DirectReports"
-}
+
 
 {
 "query": "query CalendarEvents($createdBy: String, $createdByIn: [String!], $createdByNotIn: [String!], $creationDateGt: Date, $creationDateGte: Date, $creationDateLt: Date, $creationDateLte: Date, $employeeIdIn: [String!], $modifiedBy: String, $modifiedByIn: [String!], $modifiedByNotIn: [String!], $modifiedDateGt: Date, $modifiedDateGte: Date, $modifiedDateLt: Date, $modifiedDateLte: Date, $employeeId: String, $employeeIdNotIn: [String!], $typeId: String, $typeIdIn: [String!], $typeIdNotIn: [String!], $startDatetimeGt: Date, $startDatetimeGte: Date, $startDatetimeLt: Date, $startDatetimeLte: Date, $endDatetimeGt: Date, $endDatetimeGte: Date, $endDatetimeLt: Date, $confirmationDateGt: Date, $confirmationDateGte: Date, $endDatetimeLte: Date, $confirmationDateLt: Date, $confirmationDateLte: Date, $isUnavailable: Boolean, $isConfirmed: Boolean, $descriptionLike: String, $managerId: String, $managerIdIn: [String!], $typeParentId: String, $typeParentIdIn: [String!], $capacityModifierGt: Float, $capacityModifier: Float, $capacityModifierGte: Float, $capacityModifierLt: Float, $capacityModifierLte: Float, $capacityModifierNot: Float, $limit: Int, $offset: Int, $orderBy: String) { calendarEvents(createdBy: $createdBy, createdByIn: $createdByIn, createdByNotIn: $createdByNotIn, creationDateGt: $creationDateGt, creationDateGte: $creationDateGte, creationDateLt: $creationDateLt, creationDateLte: $creationDateLte, employeeIdIn: $employeeIdIn, modifiedBy: $modifiedBy, modifiedByIn: $modifiedByIn, modifiedByNotIn: $modifiedByNotIn, modifiedDateGt: $modifiedDateGt, modifiedDateGte: $modifiedDateGte, modifiedDateLt: $modifiedDateLt, modifiedDateLte: $modifiedDateLte, employeeId: $employeeId, employeeIdNotIn: $employeeIdNotIn, typeId: $typeId, typeIdIn: $typeIdIn, typeIdNotIn: $typeIdNotIn, startDatetimeGt: $startDatetimeGt, startDatetimeGte: $startDatetimeGte, startDatetimeLt: $startDatetimeLt, startDatetimeLte: $startDatetimeLte, endDatetimeGt: $endDatetimeGt, endDatetimeGte: $endDatetimeGte, endDatetimeLt: $endDatetimeLt, confirmationDateGt: $confirmationDateGt, confirmationDateGte: $confirmationDateGte, endDatetimeLte: $endDatetimeLte, confirmationDateLt: $confirmationDateLt, confirmationDateLte: $confirmationDateLte, isUnavailable: $isUnavailable, isConfirmed: $isConfirmed, descriptionLike: $descriptionLike, managerId: $managerId, managerIdIn: $managerIdIn, typeParentId: $typeParentId, typeParentIdIn: $typeParentIdIn, capacityModifierGt: $capacityModifierGt, capacityModifier: $capacityModifier, capacityModifierGte: $capacityModifierGte, capacityModifierLt: $capacityModifierLt, capacityModifierLte: $capacityModifierLte, capacityModifierNot: $capacityModifierNot, limit: $limit, offset: $offset, orderBy: $orderBy) { items { id type {id name } createdBy creationDate confirmedBy  description  } } }",
@@ -70,9 +66,45 @@ https://vega.us-east-1.prod.atl-paas.net/graphql
     "operationName":"CalendarEvents"
 }
 
+
+-- Direct reporter
+{
+"query": "query DirectReports($employeeId: ID!) { employee(id: $employeeId) {directReports {displayName employeeId emailAddress firstName lastName isActive jobTitle}}}",
+    "variables":{"employeeId":"vkgan"},
+    "operationName":"DirectReports"
+}
+
 -- multiple users in one fetch
 {
 "query": "query CalendarEvents($employeeIdIn: [String!]) { calendarEvents(  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
     "variables":{"employeeIdIn":["adeo","vkgan"]},
+    "operationName":"CalendarEvents"
+}
+
+
+-- amol directReports
+usersToQuery: kbalachandran,aalagappan,adeo,amanojkumar,sthottamkara,smohan,nravi,skavatekar,pjain4,rshah4
+{"query":"query CalendarEvents($employeeIdIn: [String!]) { calendarEvents(  employeeIdIn: $employeeIdIn) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+"variables":{"employeeIdIn":["kbalachandran","aalagappan","adeo","amanojkumar","sthottamkara","smohan","nravi","skavatekar","pjain4","rshah4"]},
+"operationName":"CalendarEvents"
+}
+
+-- fetch by creation Date
+{
+"query": "query CalendarEvents($creationDateGt: Date) { calendarEvents(  creationDateGt: $creationDateGt) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+    "variables":{"creationDateGt":"2023-09-01"},
+    "operationName":"CalendarEvents"
+}
+
+
+--date and name
+
+{
+"query": "query CalendarEvents($startDatetimeGte: Date, $endDatetimeGte: Date, $employeeId: String) { calendarEvents(  startDatetimeGte: $startDatetimeGte,  endDatetimeGte: $endDatetimeGte, employeeId: $employeeId) { items { id type {id name } createdBy creationDate confirmedBy  description startDatetime endDatetime  employee{id division emailAddress}  } } }",
+    "variables":{
+        "employeeId":"adeo",
+        "startDatetimeGte":"2023-08-01",
+        "endDatetimeGte": "2023-09-01"
+        },
     "operationName":"CalendarEvents"
 }

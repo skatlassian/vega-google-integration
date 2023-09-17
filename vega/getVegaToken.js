@@ -1,10 +1,12 @@
 const { exec } = require("child_process");
 const execSync = require("child_process").execSync;
 const authenticateVega = require('./getVegaToken')
+const PropertiesReader = require('properties-reader');
+const properties = PropertiesReader('../env.properties');
 
 function getVegaToken(){
     var token
-     exec("atlas slauth token -a vega -e prod --output http", (error, stdout, stderr) => {
+     exec(`${properties.get("TOKEN_QUERY")}`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -26,7 +28,7 @@ function getVegaToken(){
 
 
 function getToken(){
-    return execSync("atlas slauth token -a vega -e prod --output http").toString();
+    return execSync(`${properties.get("TOKEN_QUERY")}`).toString();
 
 }
 

@@ -1,9 +1,13 @@
-# Ignore node modules
+# Ignore node modules, these will be auto created when you install the node packages (see the readme.md)
 node_modules
 
-# Ignore my properties file
+# Ignore my properties file, create one with same name in root
 env.properties
 
+# test folder to try stuffs
+play
 
-# Ignore my google service json file
+# Ignore my google service json file. Security will flag an incident if you push it --- learnt it the hard way!!!
+my-google-svc-account.json
 google/my-google-svc-account.json
+vega/my-google-svc-account.json

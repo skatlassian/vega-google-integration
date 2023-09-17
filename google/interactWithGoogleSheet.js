@@ -3,7 +3,9 @@ const {
     getSpreadSheet,
     getSpreadSheetValues,
     getSpreadSheetRows,
-    updateValues
+    getSpreadSheetRows2,
+    updateValues,
+    updateBatchValues
   } = require('./googleSheetsService.js');
 const { exec } = require("child_process");
 const execSync = require("child_process").execSync;
@@ -63,7 +65,7 @@ const GApplicationCredentialsCommand = "export GOOGLE_APPLICATION_CREDENTIALS=" 
   async function testGetSpreadSheetRows() {
     try {
       const auth = await getAuthToken();
-      const response = await getSpreadSheetRows({
+      const response = await getSpreadSheetRows2({
         spreadsheetId,
         sheetName,
         auth
@@ -88,36 +90,38 @@ const GApplicationCredentialsCommand = "export GOOGLE_APPLICATION_CREDENTIALS=" 
     }
   }
 
-  function setEnvVariables(){
-      process.env['GCLOUD_PROJECT'] = gCloudProject;
-      process.env['GOOGLE_APPLICATION_CREDENTIALS'] = gAppCredentials;
-    
-  }
 
-  function setEnvVariable(command){
-    exec(command, (error, stdout, stderr) => {
-       if (error) {
-           console.log(`error: ${error.message}`);
-           return;
-       }
-       if (stderr) {
-           console.log(`stderr: ${stderr}`);
-           return;
-       }
-       console.log(`command: ${command}, ${stdout}`);      
-       
-   })
- 
- }
 
-  
+async function testBatchUpdate() {
+    try {
+      const auth = await getAuthToken();
+      const response = await updateBatchValues({
+        spreadsheetId,
+        updateSheetName,
+        auth
+      })
+      // console.log('output for getSpreadSheetRows', JSON.stringify(response.data, null, 2));
+    } catch(error) {
+      console.log(error.message, error.stack);
+    }
+}
+
+
+
+ function setEnvVariables(){
+    process.env['GCLOUD_PROJECT'] = gCloudProject;
+    process.env['GOOGLE_APPLICATION_CREDENTIALS'] = gAppCredentials;
+
+}
+
   function main() {
      setEnvVariables();
 
      // testGetSpreadSheet();
      // testGetSpreadSheetValues();
      testGetSpreadSheetRows();
-     testUpdateValues();
+     // testUpdateValues();
+     // testBatchUpdate()
   }
   
   main()
